@@ -43,46 +43,27 @@ class EventController extends Controller
         ]);
 
         // dd($request->all());
+        // if ($request->hasFile('image')) {
+        //     $image = $request->file('image');
+        //     $image = $image->store('images/event', 'public');
+        // }
+
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $image = $image->store('images/event', 'public');
+            $imagePathStorage = $image->store('images/event', 'public');
+
+            $imageName = time() . '_' . $image->getClientOriginalName();
+            $imagePathPublic = public_path('images/event/' . $imageName);
+            $image->move(public_path('images/event'), $imageName);
         }
-        // if($request->hasFile('image'))
-        // {
-        //    $img_file = $request->file('image');
-        //    $main_img = \Str::random(10).time().'.'.$request->image->getClientOriginalExtension();
-        //    $img_filepath = 'sfu-edu/image/event/cover_image/'.$main_img;
-        //    \Storage::disk('spaces')->put($img_filepath, file_get_contents($img_file),'public');
-        //    }else{
-        //     $main_img = 'null';
-        // }
-
-        // if($request->hasfile('gallery'))
-        // {
-        //     foreach($request->file('gallery') as $key => $file)
-        //     {
-        //         $gallery_file = $file;
-        //         $gallery_filename = \Str::random(10).time().'.'.$file->getClientOriginalExtension();
-        //         $p_filepath = 'sfu-edu/image/event/gallery/'.$gallery_filename;
-        //         \Storage::disk('spaces')->put($p_filepath, file_get_contents($gallery_file),'public');
-        //         $gallery_f[] = $gallery_filename;
-        //         $gallery=implode("|",$gallery_f);
-        //     }
-
-        // }else{
-        //     $gallery =NULL;
-        // }
 
         $event = Event::create([
             'title' => $validated_data['title'],
-            'description' => $validated_data['description'],
             'status' => $request->get('status'),
-            'image' => $image,
+            'image' => $imageName,
             'event_date' => $request->get('event_date'),
             'event_time' => $request->get('event_time'),
-            'description' => $request->get('description'),
-            // 'gallery' => $gallery,
-            'date' => $request->get('date'),
+            'address' => $request->get('address'),
         ]);
 
         return redirect()->route('events.index');
@@ -110,49 +91,44 @@ class EventController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        // Validate the incoming request data
         $validated_data = $request->validate([
             'title' => 'required',
             'description' => 'required',
             'order' => 'required',
         ]);
 
+        // Find the event by its ID
         $event = Event::findOrFail($id);
 
-        if($request->hasFile('image'))
-        {
-             $vi_file = $request->file('image');
-             $vi_filename = \Str::random(10).time().'.'.$request->image->getClientOriginalExtension();
-             $vi_filepath = 'sfu-edu/image/event/cover_image/'.$vi_filename;
-             \Storage::disk('spaces')->put($vi_filepath, file_get_contents($vi_file),'public');
-             $event->image = $vi_filename;
-        }else{
-            $event->image = $event->image;
-        }
+        // Handle Image Upload
+        if ($request->hasFile('image')) {
+            // Process the uploaded image for 'storage' and 'public' folder
+            $image = $request->file('image');
+            $imageName = \Str::random(10) . time() . '.' . $image->getClientOriginalExtension();
 
-        if($request->hasfile('gallery'))
-        {
-            foreach($request->file('gallery') as $key => $file)
-            {
-                $p_file = $file;
-                $p_filename = \Str::random(10).time().'.'.$file->getClientOriginalExtension();
-                $p_filepath = 'sfu-edu/image/event/gallery/'.$p_filename;
-                \Storage::disk('spaces')->put($p_filepath, file_get_contents($p_file),'public');
-                $gallery[] = $p_filename;
-                $event->gallery =implode("|",$gallery);
-            }
-        }else{
-            $event->gallery = $event->gallery;
+            $imagePathStorage = $image->store('images/event', 'public');
+
+            // Save the image in the 'public/images/event' folder for direct access
+            $imagePathPublic = public_path('images/event/' . $imageName);
+            $image->move(public_path('images/event'), $imageName);
+
+            // Set the image paths
+            $event->image = $imageName;
+        } else {
+            $event->image = $event->image;
         }
 
         $event->title = $request->get('title');
         $event->description = $request->get('description');
         $event->status = $request->get('status');
         $event->date = $request->get('date');
-        $event->order = $request->get('order');
-        $event->update();
 
+        // Save the event
+        $event->update();
         return redirect()->route('event.index', compact('event'));
     }
+
 
     /**
      * Remove the specified resource from storage.

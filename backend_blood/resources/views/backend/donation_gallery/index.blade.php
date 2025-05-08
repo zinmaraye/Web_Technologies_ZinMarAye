@@ -40,7 +40,7 @@
                                                     <td>{{ $item->description }}</td>
                                                     <td>
                                                         @if($item->thumbnail)
-                                                            <img src="{{ asset('storage/' . $item->thumbnail) }}" alt="Thumbnail" width="80">
+                                                            <img src="{{ asset('images/donation/thumbnail/' . $item->thumbnail) }}" alt="Thumbnail" width="80">
                                                         @else
                                                             <span class="text-muted">No thumbnail</span>
                                                         @endif
@@ -52,9 +52,8 @@
                                                                 $images = json_decode($item->image, true);
                                                             @endphp
 
-                                                            {{-- Loop through each image path and display the images --}}
-                                                            @foreach($images as $image)
-                                                                <img src="{{ asset('storage/' . $image) }}" alt="Image" width="80" class="mb-2">
+                                                            @foreach ($images as $imagePath)
+                                                            <img src="{{ asset('images/donation/gallery/' . $imagePath) }}" alt="Gallery Image" width="80">
                                                             @endforeach
                                                         @else
                                                             <span class="text-muted">No image</span>

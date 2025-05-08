@@ -19,9 +19,8 @@
                         </div>
 
                         <div class="card-body">
-                            <form action="{{ route('events.update', $event->id) }}" method="POST" enctype="multipart/form-data">
+                            <form method="POST" action="{{ route('events.update', $event->id) }}" enctype="multipart/form-data">
                                 @csrf
-                                @method('PUT')
 
                                 <div class="form-row">
                                     <!-- Title -->
@@ -54,7 +53,7 @@
                                         <input type="file" name="image" class="form-control-file" id="image" accept="image/*">
                                         @if($event->image)
                                             <p class="mt-2">
-                                                <img src="{{ asset('storage/' . $event->image) }}" alt="Current Image" width="100">
+                                                <img src="{{ asset('images/event/' . $event->image) }}" alt="Current Image" width="100">
                                             </p>
                                         @endif
                                     </div>
@@ -78,3 +77,14 @@
         </div> <!-- /.animated -->
     </div> <!-- /.container-fluid -->
 @endsection
+@section('scripts')
+    <script>
+        // Initialize the Flatpickr on the input field with a 12-hour format
+flatpickr("#event_time", {
+    enableTime: true,
+    noCalendar: true,
+    dateFormat: "h:i K", // 12-hour format with AM/PM
+});
+    </script>
+@endsection
+

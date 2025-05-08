@@ -42,7 +42,7 @@
                                                     <td>{{ $event->address }}</td>
                                                     <td>
                                                         @if($event->image)
-                                                            <img src="{{ asset('storage/' . $event->image) }}" alt="Event Image" width="80">
+                                                        <img src="{{ asset('images/event/' . $event->image) }}" alt="Event Image" width="80">
                                                         @else
                                                             <span class="text-muted">No image</span>
                                                         @endif

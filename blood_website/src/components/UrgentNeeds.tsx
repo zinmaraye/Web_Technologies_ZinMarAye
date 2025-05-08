@@ -2,12 +2,20 @@ import React, { useState } from 'react';
 import { AlertCircle, Phone, X } from 'lucide-react';
 
 const UrgentNeeds = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(true); // Assume the user is logged in
   const [selectedRequest, setSelectedRequest] = useState<null | {
     bloodType: string;
     location: string;
     contact: string;
     urgency: string;
   }>(null);
+
+  const [formData, setFormData] = useState({
+    name: '',
+    phone: '',
+    preferredDonationTime: '',
+    additionalNotes: ''
+  });
 
   const urgentRequests = [
     {
@@ -30,8 +38,47 @@ const UrgentNeeds = () => {
     }
   ];
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { id, value } = e.target;
+    setFormData({ ...formData, [id]: value });
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Perform validation before submitting
+    if (!formData.name || !formData.phone || !formData.preferredDonationTime) {
+      alert('Please fill in all required fields');
+      return;
+    }
+
+    // Handle form submission
+    console.log(formData);
+    alert('Response submitted successfully!');
+    setSelectedRequest(null); // Close the modal after submission
+  };
+
+  const handleScheduleClick = (request: any) => {
+    if (!isLoggedIn) {
+      alert('Please log in to respond to this request.');
+    } else {
+      setSelectedRequest(request); // Show the request modal if logged in
+    }
+  };
+
+  // Helper function to set urgency classes dynamically
+  const urgencyClasses = (urgency: string) => {
+    switch (urgency) {
+      case 'Critical':
+        return 'bg-red-500 text-white';
+      case 'High':
+        return 'bg-orange-500 text-white';
+      default:
+        return 'bg-yellow-500 text-white';
+    }
+  };
+
   return (
-    <div className="py-16 bg-white">
+    <div className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold mb-4">Urgent Blood Needs</h2>
@@ -43,11 +90,7 @@ const UrgentNeeds = () => {
             <div key={index} className="border border-red-100 p-6 rounded-lg bg-red-50">
               <div className="flex items-center justify-between mb-4">
                 <span className="text-2xl font-bold text-red-500">{request.bloodType}</span>
-                <span className={`px-3 py-1 rounded-full text-sm ${
-                  request.urgency === 'Critical' ? 'bg-red-500 text-white' :
-                  request.urgency === 'High' ? 'bg-orange-500 text-white' :
-                  'bg-yellow-500 text-white'
-                }`}>
+                <span className={`px-3 py-1 rounded-full text-sm ${urgencyClasses(request.urgency)}`}>
                   {request.urgency}
                 </span>
               </div>
@@ -61,7 +104,7 @@ const UrgentNeeds = () => {
               
               <button 
                 className="mt-4 w-full bg-red-500 text-white py-2 rounded hover:bg-red-600"
-                onClick={() => setSelectedRequest(request)}
+                onClick={() => handleScheduleClick(request)}
               >
                 Respond to Request
               </button>
@@ -71,7 +114,7 @@ const UrgentNeeds = () => {
       </div>
 
       {/* Response Modal */}
-      {selectedRequest && (
+      {selectedRequest && isLoggedIn && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg max-w-md w-full p-6">
             <div className="flex justify-between items-center mb-4">
@@ -84,22 +127,7 @@ const UrgentNeeds = () => {
               </button>
             </div>
 
-            <div className="mb-6">
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-lg font-semibold">Blood Type:</span>
-                <span className="text-xl font-bold text-red-500">{selectedRequest.bloodType}</span>
-              </div>
-              <div className="mb-2">
-                <span className="font-semibold">Location:</span>
-                <span className="ml-2">{selectedRequest.location}</span>
-              </div>
-              <div className="mb-4">
-                <span className="font-semibold">Contact:</span>
-                <span className="ml-2">{selectedRequest.contact}</span>
-              </div>
-            </div>
-
-            <form className="space-y-4">
+            <form className="space-y-4" onSubmit={handleSubmit}>
               <div>
                 <label className="block text-gray-700 mb-2" htmlFor="name">
                   Your Name
@@ -107,6 +135,8 @@ const UrgentNeeds = () => {
                 <input
                   type="text"
                   id="name"
+                  value={formData.name}
+                  onChange={handleChange}
                   className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
                   placeholder="Enter your full name"
                 />
@@ -119,6 +149,8 @@ const UrgentNeeds = () => {
                 <input
                   type="tel"
                   id="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
                   className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
                   placeholder="Enter your phone number"
                 />
@@ -130,7 +162,9 @@ const UrgentNeeds = () => {
                 </label>
                 <input
                   type="datetime-local"
-                  id="time"
+                  id="preferredDonationTime"
+                  value={formData.preferredDonationTime}
+                  onChange={handleChange}
                   className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
                 />
               </div>
@@ -140,7 +174,9 @@ const UrgentNeeds = () => {
                   Additional Notes
                 </label>
                 <textarea
-                  id="notes"
+                  id="additionalNotes"
+                  value={formData.additionalNotes}
+                  onChange={handleChange}
                   rows={3}
                   className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
                   placeholder="Any additional information..."
@@ -168,6 +204,6 @@ const UrgentNeeds = () => {
       )}
     </div>
   );
-}
+};
 
 export default UrgentNeeds;

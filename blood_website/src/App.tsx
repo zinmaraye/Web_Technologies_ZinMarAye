@@ -1,60 +1,46 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; // Import necessary components from react-router-dom
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import Banner from './components/Banner';
-import Stats from './components/Stats';
+import HomePage from './components/HomePage';
+import BloodDonationProcess from './components/BloodDonationProcess';
+import EligibilityRequirements from './components/EligibilityRequirements';
+import ImpactStories from './components/ImpactStories';
+import DonorRecognition from './components/DonorRecognition';
 import Schedule from './components/Schedule';
 import UrgentNeeds from './components/UrgentNeeds';
 import Gallery from './components/Gallery';
 import Education from './components/Education';
-import BloodDonationProcess from './components/BloodDonationProcess'; 
-import EligibilityRequirements from './components/EligibilityRequirements';
-// import ImpactStories from './components/ImpactStories'; 
-// import DonorRecognition from './components/DonorRecognition';
+import Requirement from './components/Requirement';
+import Footer from './components/Footer';
 
 function App() {
   return (
     <Router>
       <div className="min-h-screen bg-gray-50">
+        {/* Navbar is outside Routes so it appears on all pages */}
         <Navbar />
-        <div id="home" className="pt-16">
-          <Banner />
-        </div>
-        <Stats />
-        <div id="schedule">
-          <Schedule />
-        </div>
-        <div id="urgent-needs">
-          <UrgentNeeds />
-        </div>
-        <div id="gallery">
-          <Gallery />
-        </div>
-        <div id="education">
-          <Education />
-        </div>
 
         {/* Main Content with Routes */}
         <Routes>
-          <Route path="/" element={
-            <main className="p-8 text-center">
-              <h1 className="text-4xl font-bold text-gray-800 mb-4">Every Drop Counts</h1>
-              <p className="text-lg text-gray-600 mb-6">
-                Your blood donation can save up to three lives. Join our mission to ensure no one runs out of blood when they need it most.
-              </p>
-              <button className="bg-red-600 text-white px-6 py-3 rounded hover:bg-red-700 transition duration-200">
-                Become a Donor
-              </button>
-            </main>
-          } />
+          {/* Home Route */}
+          <Route path="/" element={<HomePage />} />
           
-          {/* Define routes for detailed pages */}
+          {/* Define routes for other pages */}
           <Route path="/blood-donation-process" element={<BloodDonationProcess />} />
           <Route path="/eligibility-requirements" element={<EligibilityRequirements />} />
-          {/* <Route path="/impact-stories" element={<ImpactStories />} /> */}
-          {/* <Route path="/donor-recognition" element={<DonorRecognition />} /> */}
+          <Route path="/impact-stories" element={<ImpactStories />} />
+          <Route path="/donor-recognition" element={<DonorRecognition />} />
+          
+          {/* Additional routes for each section */}
+          <Route path="/schedule" element={<Schedule />} />
+          <Route path="/urgent-needs" element={<UrgentNeeds />} />
+          <Route path="/gallery" element={<Gallery />} />
+          <Route path="/education" element={<Education />} />
+          <Route path="/requirement" element={<Requirement />} />
         </Routes>
       </div>
+      {/* Footer can be added here if needed */}
+      <Footer />
     </Router>
   );
 }

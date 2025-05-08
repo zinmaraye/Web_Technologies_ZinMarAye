@@ -1,29 +1,30 @@
 import React from 'react';
 import { Book, Heart, Users, Award } from 'lucide-react';
-import { Link } from 'react-router-dom'; // Import Link from React Router
+import { Link } from 'react-router-dom'; 
+import { FaBookMedical, FaHeartbeat, FaUserFriends, FaMedal } from 'react-icons/fa';
 
 const Education = () => {
   const resources = [
     {
-      icon: <Book className="h-8 w-8 text-red-500" />,
+      icon: <FaBookMedical className="text-4xl text-red-500" />,
       title: "Blood Donation Process",
       description: "Learn about the step-by-step process of donating blood and what to expect.",
       link: "/blood-donation-process" // Link to Blood Donation Process page
     },
     {
-      icon: <Heart className="h-8 w-8 text-red-500" />,
+      icon: <FaHeartbeat className="text-4xl text-red-500" />,
       title: "Eligibility Requirements",
       description: "Find out if you're eligible to donate blood and what conditions might affect your ability to donate.",
       link: "/eligibility-requirements" // Link to Eligibility Requirements page
     },
     {
-      icon: <Users className="h-8 w-8 text-red-500" />,
+      icon: <FaUserFriends className="text-4xl text-red-500" />,
       title: "Impact Stories",
       description: "Read inspiring stories from donors and recipients about how blood donation has changed their lives.",
       link: "/impact-stories" // Link to Impact Stories page
     },
     {
-      icon: <Award className="h-8 w-8 text-red-500" />,
+      icon: <FaMedal className="text-4xl text-red-500" />,
       title: "Donor Recognition",
       description: "Learn about our donor recognition program and how we celebrate our regular donors.",
       link: "/donor-recognition" // Link to Donor Recognition page
@@ -31,7 +32,7 @@ const Education = () => {
   ];
 
   return (
-    <div className="py-16 bg-white">
+    <div className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold mb-4">Blood Donation Education</h2>
