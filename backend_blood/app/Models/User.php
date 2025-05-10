@@ -20,7 +20,13 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'phone',
         'password',
+        'blood_group',
+        'address',
+        'status',
+        'age',
+        'weight'
     ];
 
     /**
@@ -41,5 +47,13 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'name' => 'string',
+        'email' => 'string',
+        'phone' => 'integer',
+        'blood_group' => 'string',
+        'address' => 'string',
+        'status' => 'string',
+        'age' => 'integer',
+        'weight' => 'integer',
     ];
 }

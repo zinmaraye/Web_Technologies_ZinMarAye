@@ -11,14 +11,14 @@
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-header d-flex justify-content-between align-items-center">
-                            <span><i class="fa fa-align-justify"></i> User Donation List</span>
+                            <span><i class="fa fa-align-justify"></i> User Appointment List</span>
                             <a class="btn btn-sm btn-primary create_btn" href="">
                                 <i class="fa fa-plus"></i> Add New Donation
                             </a>
                         </div>
 
                         <div class="card-body">
-                            @if($user_donations->count())
+                            @if($user_appointments->count())
                                 <div class="table-responsive">
                                     <table class="table table-bordered table-striped table-hover">
                                         <thead>
@@ -32,13 +32,13 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach($user_donations as $index => $donation)
+                                            @foreach($user_appointments as $index => $user_appointment)
                                                 <tr>
                                                     <td>{{ $index + 1 }}</td>
-                                                    <td>{{ $donation->user_id }}</td>
-                                                    <td>{{ $donation->blood_type }}</td>
-                                                    <td>{{ $donation->donation_date }}</td>
-                                                    <td>{{ $donation->status }}</td>
+                                                    <td>{{ $user_appointment->user_id }}</td>
+                                                    <td>{{ $user_appointment->blood_type }}</td>
+                                                    <td>{{ $user_appointment->donation_date }}</td>
+                                                    <td>{{ $user_appointment->status }}</td>
                                                     <td>
                                                         <a href="" class="btn btn-sm btn-warning">Edit</a>
                                                     </td>

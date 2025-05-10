@@ -6,23 +6,22 @@ import BloodDonationProcess from './components/BloodDonationProcess';
 import EligibilityRequirements from './components/EligibilityRequirements';
 import ImpactStories from './components/ImpactStories';
 import DonorRecognition from './components/DonorRecognition';
-import Schedule from './components/Schedule';
+import Event from './components/Event';
 import UrgentNeeds from './components/UrgentNeeds';
 import Gallery from './components/Gallery';
 import Education from './components/Education';
 import Requirement from './components/Requirement';
+import Profile from './components/Profile';
 import Footer from './components/Footer';
 
 function App() {
   return (
     <Router>
       <div className="min-h-screen bg-gray-50">
-        {/* Navbar is outside Routes so it appears on all pages */}
         <Navbar />
 
-        {/* Main Content with Routes */}
         <Routes>
-          {/* Home Route */}
+          {/* Home Page */}
           <Route path="/" element={<HomePage />} />
           
           {/* Define routes for other pages */}
@@ -32,14 +31,15 @@ function App() {
           <Route path="/donor-recognition" element={<DonorRecognition />} />
           
           {/* Additional routes for each section */}
-          <Route path="/schedule" element={<Schedule />} />
+          <Route path="/event" element={<Event />} />
           <Route path="/urgent-needs" element={<UrgentNeeds />} />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/education" element={<Education />} />
           <Route path="/requirement" element={<Requirement />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </div>
-      {/* Footer can be added here if needed */}
+      {/* Footer */}
       <Footer />
     </Router>
   );

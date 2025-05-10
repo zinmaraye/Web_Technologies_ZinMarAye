@@ -15,9 +15,7 @@ class Admin extends Authenticatable
         'name',
         'email',
         'password',
-        'role_id',
         'phone',
-        'admin_permission',
     ];
 
     protected $casts = [
@@ -26,8 +24,6 @@ class Admin extends Authenticatable
         'email' => 'string',
         'email_verified_at' => 'datetime',
         'password' => 'string',
-        'role_id' => 'integer',
         'phone' => 'integer',
-        'admin_permission' => 'string',
     ];
 }

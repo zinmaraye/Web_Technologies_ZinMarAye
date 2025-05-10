@@ -70,22 +70,15 @@ class DonationGalleryController extends Controller
         // Loop through each uploaded image
         foreach ($request->file('images') as $image) {
 
-            // Store the image in the 'images/donation/gallery' directory in the 'public' disk (storage/app/public)
             $imagePathStorage = $image->store('images/donation/gallery', 'public');
 
-            // Generate a custom name for the image in the public folder
             $imageName = time() . '_' . $image->getClientOriginalName();
 
-            // Define the path where the image will be stored in the public folder (public/images/donation/gallery)
             $imagePathPublic = public_path('images/donation/gallery/' . $imageName);
 
-            // Move the image from the temporary folder to the public folder
             $image->move(public_path('images/donation/gallery'), $imageName);
 
-            // Store both paths in the array
             $imagePaths[] = $imageName; // Store the path from the 'public' disk (for storage)
-            // Optionally, you can also store the public path in the database if needed
-            // $imagePaths[] = 'images/donation/gallery/' . $imageName; // For direct access from the public folder
         }
     }
         // Create a new gallery item

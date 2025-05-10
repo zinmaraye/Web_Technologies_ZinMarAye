@@ -40,7 +40,7 @@
                     <div class="card">
                         <div class="card-body text-center">
                             <div class="icon mb-3" style="font-size: 40px; color: #f44336;">
-                                <i class="fa fa-calendar-alt"></i>
+                                <i class="fa fa-tint"></i>
                             </div>
                             <h3 class="card-title">{{ number_format($monthlyDonations) }}+</h3>
                             <p class="card-text">Monthly Donations</p>

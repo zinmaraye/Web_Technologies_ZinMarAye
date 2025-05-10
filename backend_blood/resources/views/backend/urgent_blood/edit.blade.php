@@ -2,7 +2,7 @@
 
 @section('content')
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ route('blood.index') }}">Urgent Blood List</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('urgent_blood.list') }}">Urgent Blood List</a></li>
         <li class="breadcrumb-item active">Edit Urgent Blood Request</li>
     </ol>
 
@@ -16,50 +16,59 @@
                         </div>
 
                         <div class="card-body">
-                            <form action="{{ route('blood.update', $bloodRequest->id) }}" method="POST">
+                            <form action="{{ route('urgent_blood.update', $urgent_blood->id) }}" method="POST" enctype="multipart/form-data">
                                 @csrf
-                                @method('PUT')
-
                                 <div class="form-group">
                                     <label for="blood_group">Blood Group</label>
                                     <select name="blood_group" id="blood_group" class="form-control" required>
                                         <option value="">Select Blood Group</option>
-                                        <option value="A+" {{ $bloodRequest->blood_group == 'A+' ? 'selected' : '' }}>A+</option>
-                                        <option value="A-" {{ $bloodRequest->blood_group == 'A-' ? 'selected' : '' }}>A-</option>
-                                        <option value="B+" {{ $bloodRequest->blood_group == 'B+' ? 'selected' : '' }}>B+</option>
-                                        <option value="B-" {{ $bloodRequest->blood_group == 'B-' ? 'selected' : '' }}>B-</option>
-                                        <option value="O+" {{ $bloodRequest->blood_group == 'O+' ? 'selected' : '' }}>O+</option>
-                                        <option value="O-" {{ $bloodRequest->blood_group == 'O-' ? 'selected' : '' }}>O-</option>
-                                        <option value="AB+" {{ $bloodRequest->blood_group == 'AB+' ? 'selected' : '' }}>AB+</option>
-                                        <option value="AB-" {{ $bloodRequest->blood_group == 'AB-' ? 'selected' : '' }}>AB-</option>
+                                        <option value="A+" {{ $urgent_blood->blood_group == 'A+' ? 'selected' : '' }}>A+</option>
+                                        <option value="A-" {{ $urgent_blood->blood_group == 'A-' ? 'selected' : '' }}>A-</option>
+                                        <option value="B+" {{ $urgent_blood->blood_group == 'B+' ? 'selected' : '' }}>B+</option>
+                                        <option value="B-" {{ $urgent_blood->blood_group == 'B-' ? 'selected' : '' }}>B-</option>
+                                        <option value="O+" {{ $urgent_blood->blood_group == 'O+' ? 'selected' : '' }}>O+</option>
+                                        <option value="O-" {{ $urgent_blood->blood_group == 'O-' ? 'selected' : '' }}>O-</option>
+                                        <option value="AB+" {{ $urgent_blood->blood_group == 'AB+' ? 'selected' : '' }}>AB+</option>
+                                        <option value="AB-" {{ $urgent_blood->blood_group == 'AB-' ? 'selected' : '' }}>AB-</option>
                                     </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="location">Location</label>
+                                    <input type="text" name="location" id="location" class="form-control" value="{{ $urgent_blood->location }}" required>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="address">Address</label>
-                                    <textarea name="address" id="address" class="form-control" rows="3" required>{{ old('address', $bloodRequest->address) }}</textarea>
+                                    <textarea name="address" id="address" class="form-control" rows="3" required>{{ $urgent_blood->address }}</textarea>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="phone">Phone</label>
-                                    <input type="text" name="phone" id="phone" class="form-control" value="{{ old('phone', $bloodRequest->phone) }}" required>
+                                    <label for="contact">Contact</label>
+                                    <input type="text" name="contact" id="contact" class="form-control" value="{{ $urgent_blood->contact }}" required>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="status">Status</label>
-                                    <select name="status" id="status" class="form-control" required>
-                                        <option value="">Select Status</option>
-                                        <option value="Pending" {{ $bloodRequest->status == 'Pending' ? 'selected' : '' }}>Pending</option>
-                                        <option value="Fulfilled" {{ $bloodRequest->status == 'Fulfilled' ? 'selected' : '' }}>Fulfilled</option>
-                                        <option value="Cancelled" {{ $bloodRequest->status == 'Cancelled' ? 'selected' : '' }}>Cancelled</option>
+                                    <label for="urgency">Urgency</label>
+                                    <select name="urgency" id="urgency" class="form-control" required>
+                                        <option value="High" {{ $urgent_blood->urgency == 'High' ? 'selected' : '' }}>High</option>
+                                        <option value="Medium" {{ $urgent_blood->urgency == 'Medium' ? 'selected' : '' }}>Medium</option>
+                                        <option value="Critical" {{ $urgent_blood->urgency == 'Critical' ? 'selected' : '' }}>Critical</option>
                                     </select>
                                 </div>
 
+                                <div class="form-group">
+                                    <label for="active">Active</label>
+                                    <select name="active" id="active" class="form-control" required>
+                                        <option value="1" {{ $urgent_blood->active == 1 ? 'selected' : '' }}>Active</option>
+                                        <option value="0" {{ $urgent_blood->active == 0 ? 'selected' : '' }}>Inactive</option>
+                                    </select>
+                                </div>
                                 <div class="form-group text-right">
                                     <button type="submit" class="btn btn-sm btn-primary">
-                                        <i class="fa fa-save"></i> Update
+                                        <i class="fa fa-save"></i> Save Changes
                                     </button>
-                                    <a href="{{ route('blood.index') }}" class="btn btn-sm btn-secondary">
+                                    <a href="{{ route('urgent_blood.list') }}" class="btn btn-sm btn-secondary">
                                         <i class="fa fa-times"></i> Cancel
                                     </a>
                                 </div>

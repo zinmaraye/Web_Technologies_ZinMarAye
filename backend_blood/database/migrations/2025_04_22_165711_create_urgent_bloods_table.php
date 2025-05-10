@@ -13,10 +13,12 @@ return new class extends Migration
     {
         Schema::create('urgent_bloods', function (Blueprint $table) {
             $table->id();
-            $table->string('blood_group');
-            $table->string('address');
-            $table->string('phone');
-            $table->integer('status')->default(0);
+            $table->string('blood_group')->nullable();
+            $table->string('location')->nullable();
+            $table->string('address')->nullable();
+            $table->string('contact')->nullable();
+            $table->string('urgency')->nullable();
+            $table->integer('active')->default(0);
             $table->timestamps();
         });
     }

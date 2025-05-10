@@ -26,7 +26,7 @@ class UrgentBloodController extends Controller
      */
     public function create()
     {
-        //
+        return view('backend.urgent_blood.create');
     }
 
     /**
@@ -34,7 +34,31 @@ class UrgentBloodController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // dd($request->all());
+        $validatedData = $request->validate([
+            'blood_group' => 'required|string',
+            'location' => 'required|string',
+            'address' => 'required|string',
+            'contact' => 'required|string',
+            'urgency' => 'required|string',
+            'active' => 'required|integer',  // 0 for inactive, 1 for active
+        ]);
+        // dd('ZMAN');
+        // Create a new urgent blood request entry
+        $urgentBlood = new UrgentBlood();
+        $urgentBlood->blood_group = $validatedData['blood_group'];
+        $urgentBlood->location = $validatedData['location'];
+        $urgentBlood->address = $validatedData['address'];
+        $urgentBlood->contact = $validatedData['contact'];
+        $urgentBlood->urgency = $validatedData['urgency'];
+        $urgentBlood->active = $validatedData['active'];
+
+        // Save the record
+        $urgentBlood->save();
+
+        // Return a success message or response
+        return redirect()->route('urgent_blood.list')
+        ->with('success', 'Urgent blood request saved successfully!');
     }
 
     /**
@@ -48,17 +72,45 @@ class UrgentBloodController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($id)
     {
-        //
+        // Fetch the urgent blood request by ID
+        $urgent_blood = UrgentBlood::findOrFail($id);
+
+        // Return the edit view with the existing data
+        return view('backend.urgent_blood.edit', compact('urgent_blood'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        //
+        // Validate the incoming data
+        $request->validate([
+            'blood_group' => 'required|string',
+            'location' => 'required|string',
+            'address' => 'required|string',
+            'contact' => 'required|string',
+            'urgency' => 'required|string',
+            'active' => 'required|boolean',
+        ]);
+
+        // Find the urgent blood request record
+        $urgent_blood = UrgentBlood::findOrFail($id);
+
+        // Update the urgent blood request data
+        $urgent_blood->update([
+            'blood_group' => $request->blood_group,
+            'location' => $request->location,
+            'address' => $request->address,
+            'contact' => $request->contact,
+            'urgency' => $request->urgency,
+            'active' => $request->active,
+        ]);
+
+        // Redirect to the urgent blood list with a success message
+        return redirect()->route('urgent_blood.list')->with('success', 'Urgent Blood Request updated successfully!');
     }
 
     /**
@@ -66,6 +118,8 @@ class UrgentBloodController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $urgent_blood = UrgentBlood::findOrFail($id);
+        $urgent_blood->delete();
+        return redirect()->route('urgent_blood.list')->with('success', 'Urgent Blood Request deleted successfully!');
     }
 }

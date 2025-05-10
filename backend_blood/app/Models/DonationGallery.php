@@ -14,8 +14,6 @@ class DonationGallery extends Model
     public $fillable = [
         'id',
         'title',
-        'description',
-        'thumbnail',
         'image',
         'rank',
     ];
@@ -23,8 +21,6 @@ class DonationGallery extends Model
     protected $casts = [
         'id' => 'integer',
         'title' => 'string',
-        'description' => 'string',
-        'thumbnail' => 'string',
         'image' => 'string',
         'rank' => 'integer',
     ];

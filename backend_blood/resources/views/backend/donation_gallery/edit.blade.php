@@ -26,23 +26,6 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="description">Description</label>
-                                    <textarea name="description" id="description" class="form-control" rows="3" required>{{ old('description', $galleryItem->description) }}</textarea>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="thumbnail">Thumbnail Image</label>
-                                    <input type="file" name="thumbnail" id="thumbnail" class="form-control-file" accept="image/*">
-                                    @if($galleryItem->thumbnail)
-                                        <div class="mt-2">
-                                            <img src="{{ asset('storage/' . $galleryItem->thumbnail) }}" alt="Thumbnail" width="80">
-                                        </div>
-                                    @else
-                                        <p class="text-muted">No thumbnail image uploaded</p>
-                                    @endif
-                                </div>
-
-                                <div class="form-group">
                                     <label for="image">Full Image</label>
                                     <input type="file" name="image" id="image" class="form-control-file" accept="image/*">
                                     @if($galleryItem->image)

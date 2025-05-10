@@ -1,7 +1,7 @@
 import React from 'react';
 import Banner from './Banner';
 import Stats from './Stats';
-import Schedule from './Schedule';
+import Event from './Event';
 import UrgentNeeds from './UrgentNeeds';
 import Gallery from './Gallery';
 import Education from './Education';
@@ -18,8 +18,8 @@ function HomePage() {
       <Stats />
 
       {/* Schedule Section */}
-      <div id="schedule" className="py-1">
-        <Schedule />
+      <div id="event" className="py-1">
+        <Event />
       </div>
 
       {/* Urgent Needs Section */}

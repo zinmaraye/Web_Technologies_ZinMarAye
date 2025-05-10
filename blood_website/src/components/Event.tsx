@@ -1,101 +1,81 @@
 import React, { useState, useEffect } from 'react';
-import { Phone, X } from 'lucide-react';
+import { MapPin, Clock, X } from 'lucide-react';
 import axios from 'axios';
 
-const UrgentNeeds = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(true); // Assume the user is logged in
-  const [selectedRequest, setSelectedRequest] = useState<null | {
-    bloodType: string;
-    location: string;
-    contact: string;
-    urgency: string;
-    id: number;
-    type: string; 
-  }>(null);
-  const [urgentRequests, setUrgentRequests] = useState<any[]>([]);
+const Event = () => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { id, value } = e.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [id]: value,
+    }));
+  };
+  const [selectedEvent, setSelectedEvent] = useState<any | null>(null);
+  const [events, setEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
     password: '',
-    appointment_date: '',
-    appointment_time: '',
-    last_donation_date: '',
+    bloodType: '',
+    preferredDonationDate: '',
+    preferredDonationTime: '',
+    lastDonationDate: '',
     weight: '',
-    bloodType: '', 
     additionalNotes: '',
-    urgent_blood_id: '',
-    type: 'urgent'
   });
-console.log('Form Data:', formData); 
+
+  // Fetch events from the backend API
   useEffect(() => {
-    const fetchUrgentRequests = async () => {
+    const fetchEvents = async () => {
       setLoading(true);
       try {
-        const response = await axios.get('http://localhost:8000/api/urgent/blood/list');
-        console.log('API Response:', response); 
-        if (response.data && response.data.data && Array.isArray(response.data.data[0])) {
-          setUrgentRequests(response.data.data[0]); 
+        const response = await axios.get('http://localhost:8000/api/event/list');
+        if (response.data && response.data.data && Array.isArray(response.data.data)) {
+          setEvents(response.data.data); // Use the correct path to access event data
         } else {
           setError('Unexpected response structure');
         }
       } catch (error) {
-        console.error('Error fetching urgent requests:', error);
-        setError('Error fetching urgent requests.');
+        console.error(error); // Log the error in case of failure
+        setError('Error fetching events.');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchUrgentRequests();
+    fetchEvents();
   }, []);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { id, value } = e.target;
-    setFormData({ ...formData, [id]: value });
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form ZMA Data:', formData); 
-    if (!formData.name || !formData.phone || !formData.appointment_date || !formData.appointment_time) {
-      alert('Please fill in all required fields');
+    
+    if (!formData.name || !formData.email || !formData.phone || !formData.bloodType) {
+      alert('Please fill out all required fields.');
       return;
     }
 
     try {
-      console.log('Submitting form data:', formData); 
-      const response = await axios.post('http://localhost:8000/api/store/appointments', formData);
-      console.log('API Response:', response); 
-      alert('Response submitted successfully!');
-      setSelectedRequest(null); 
-    } catch (error) {
-      console.error('Error during submission:', error);
+      const response = await axios.post('http://localhost:8000/api/appointments', {
+        ...formData,
+        event_title: selectedEvent?.title,
+        event_date: selectedEvent?.event_date,
+        event_time: selectedEvent?.event_time,
+        event_address: selectedEvent?.address,
+      });
 
-      if (axios.isAxiosError(error) && error.response && error.response.data) {
-        console.log('Error Response:', error.response.data); 
-        alert(`Submission failed: ${error.response.data.message}`);
-      } else {
-        alert('Submission failed. Please try again.');
-      }
+      alert('Appointment confirmed!');
+      setSelectedEvent(null);
+    } catch (err) {
+      console.error(err);
+      alert('Submission failed. Please try again.');
     }
   };
 
-  const handleScheduleClick = (request: any) => {
-    if (!isLoggedIn) {
-      alert('Please log in to respond to this request.');
-    } else {
-      setSelectedRequest(request); 
-      setFormData({
-        ...formData,
-        urgent_blood_id: request.id, 
-        bloodType: request.bloodType,
-        type: 'urgent'
-      });
-    }
+  const handleScheduleClick = (event: any) => {
+    setSelectedEvent(event); // Show the appointment form when event is selected
   };
 
   const urgencyClasses = (urgency: string) => {
@@ -109,65 +89,77 @@ console.log('Form Data:', formData);
     }
   };
 
+  if (loading) return <div className="text-center">Loading events...</div>;
+  if (error) return <div className="text-center text-red-500">{error}</div>;
+
   return (
-    <div className="py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4">Urgent Blood Needs</h2>
-          <p className="text-gray-600">These patients need immediate blood donations</p>
-        </div>
+    <>
+      {/* Banner Section */}
+      <div className="w-full h-[550px] relative">
+        <img
+          src="7233454.jpg"
+          alt="Banner Image"
+          className="w-full h-full object-cover"
+        />
+      </div>
 
-        {/* Display loading or error messages */}
-        {loading && <div className="text-center">Loading...</div>}
-        {error && <div className="text-center text-red-500">{error}</div>}
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {!loading && !error && urgentRequests.map((request, index) => (
-            <div key={index} className="border border-red-100 p-6 rounded-lg bg-red-50">
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-2xl font-bold text-red-500">{request.blood_group}</span>
-                <span className={`px-3 py-1 rounded-full text-sm ${urgencyClasses(request.urgency)}`}>
-                  {request.urgency}
-                </span>
-              </div>
-
-              <p className="text-gray-700 mb-2">{request.location}</p>
-
-              <div className="flex items-center text-gray-600">
-                <Phone className="h-4 w-4 mr-2" />
-                <span>{request.contact}</span>
-              </div>
-
-              <button
-                className="mt-4 w-full bg-red-500 text-white py-2 rounded hover:bg-red-600"
-                onClick={() => handleScheduleClick(request)}
-              >
-                Respond to Request
-              </button>
-            </div>
-          ))}
+      <div className="py-16 bg-gray-50 py-20">
+      <h1 className="text-black text-center text-4xl font-bold">Upcoming Donation Events</h1>
+        <div className="max-w-7xl mx-auto py-5 px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {events.length > 0 ? (
+              events.map((event, index) => (
+                <div key={index} className="bg-white p-6 rounded-lg shadow-md">
+                  {/* Event Image */}
+                  {event.image && (
+                    <img
+                      src={event.image.startsWith('http') ? event.image : `http://localhost:8000/images/event/${event.image}`} // Handle relative or full URL
+                      alt={event.title}
+                      className="w-full h-48 object-cover rounded-md mb-4"
+                    />
+                  )}
+                  <h3 className="text-xl font-semibold mb-4">{event.title}</h3>
+                  <div className="flex items-center mb-2">
+                    <Clock className="h-5 w-5 text-red-500 mr-2" />
+                    <p>{event.event_date}</p>
+                  </div>
+                  <div className="flex items-center mb-2">
+                    <Clock className="h-5 w-5 text-red-500 mr-2" />
+                    <p>{event.event_time}</p>
+                  </div>
+                  <div className="flex items-center">
+                    <MapPin className="h-5 w-5 text-red-500 mr-2" />
+                    <p>{event.address}</p>
+                  </div>
+                  <button
+                    className="mt-4 w-full bg-red-500 text-white py-2 rounded hover:bg-red-600"
+                    onClick={() => handleScheduleClick(event)} // Trigger schedule appointment
+                  >
+                    Schedule Appointment
+                  </button>
+                </div>
+              ))
+            ) : (
+              <div>No events available at the moment.</div>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Response Modal */}
-      {selectedRequest && isLoggedIn && (
+      {/* Appointment form modal */}
+      {selectedEvent && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg max-w-4xl w-full p-6 overflow-y-auto max-h-[90vh]">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xl font-semibold">Respond to Blood Request</h3>
-              <button
-                onClick={() => setSelectedRequest(null)}
-                className="text-gray-500 hover:text-gray-700"
-              >
+              <h3 className="text-xl font-semibold">Schedule Donation Appointment</h3>
+              <button onClick={() => setSelectedEvent(null)} className="text-gray-500 hover:text-gray-700">
                 <X className="h-6 w-6" />
               </button>
             </div>
 
             <form className="space-y-4" onSubmit={handleSubmit}>
               {/* Name and Email on the same row */}
-              <input type="hidden" id="type" name="type" value="urgent" 
-                onChange={handleChange} 
-              />
+              <input type="hidden" name='type' value={'event'} />
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-gray-700 mb-2" htmlFor="name">
@@ -188,7 +180,7 @@ console.log('Form Data:', formData);
                     Your Email
                   </label>
                   <input
-                    type="email"
+                    type="text"
                     id="email"
                     value={formData.email}
                     onChange={handleChange}
@@ -256,26 +248,26 @@ console.log('Form Data:', formData);
               {/* Preferred Donation Date and Time */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-gray-700 mb-2" htmlFor="appointment_date">
+                  <label className="block text-gray-700 mb-2" htmlFor="preferredDonationDate">
                     Preferred Donation Date
                   </label>
                   <input
                     type="date"
-                    id="appointment_date"
-                    value={formData.appointment_date}
+                    id="preferredDonationDate"
+                    value={formData.preferredDonationDate}
                     onChange={handleChange}
                     className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-gray-700 mb-2" htmlFor="appointment_time">
+                  <label className="block text-gray-700 mb-2" htmlFor="preferredDonationTime">
                     Preferred Donation Time
                   </label>
                   <input
                     type="time"
-                    id="appointment_time"
-                    value={formData.appointment_time}
+                    id="preferredDonationTime"
+                    value={formData.preferredDonationTime}
                     onChange={handleChange}
                     className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
                   />
@@ -285,20 +277,20 @@ console.log('Form Data:', formData);
               {/* Last Donation Date */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-gray-700 mb-2" htmlFor="last_donation_date">
+                  <label className="block text-gray-700 mb-2" htmlFor="lastDonationDate">
                     Last Donation Date
                   </label>
                   <input
                     type="date"
-                    id="last_donation_date"
-                    value={formData.last_donation_date}
+                    id="lastDonationDate"
+                    value={formData.lastDonationDate}
                     onChange={handleChange}
                     className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
                   />
                 </div>
                 <div>
                   <label className="block text-gray-700 mb-2" htmlFor="weight">
-                    Weight (lb)
+                    Weight
                   </label>
                   <input
                     type="text"
@@ -328,7 +320,7 @@ console.log('Form Data:', formData);
               <div className="flex space-x-4">
                 <button
                   type="button"
-                  onClick={() => setSelectedRequest(null)}
+                  onClick={() => setSelectedEvent(null)}
                   className="flex-1 bg-gray-200 text-gray-700 py-2 rounded-md hover:bg-gray-300 transition-colors"
                 >
                   Cancel
@@ -344,8 +336,8 @@ console.log('Form Data:', formData);
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 };
 
-export default UrgentNeeds;
+export default Event;

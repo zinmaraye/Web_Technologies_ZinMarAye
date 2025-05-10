@@ -58,23 +58,69 @@ class APIController extends Controller
 
     public function appointment_store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string',
-            'email' => 'required|email',
-            'phone' => 'required|string',
-            'bloodType' => 'required|string',
-            'appointmentDate' => 'required|date',
-            'appointmentTime' => 'required',
-            'event_title' => 'required|string',
-            'event_date' => 'required|date',
-            'event_time' => 'required|string',
-            'event_address' => 'required|string',
-        ]);
 
-        $appointment = Appointment::create($validated);
+        try {
 
-        return response()->json(['message' => 'Appointment saved successfully', 'data' => $appointment], 201);
+            $validated = $request->validate([
+                'name' => 'required|string',
+                'email' => 'required|email',
+                'phone' => 'required|string',
+                'password' => 'required|string',
+                'bloodType' => 'required|string',
+                'appointment_date' => 'required|date',
+                'appointment_time' => 'required',
+                'last_donation_date' => 'required|string',
+                'type' => 'required|string',
+                'event_id' => 'required|integer',
+            ]);
+            // dd('ZMA');
+
+
+            if($validated['type'] == 'urgent'){
+                $validated['event'] = UrgentBlood::where('id', $validated['event_id'])->first();
+            }else{
+                $validated['event'] = Event::where('id', $validated['event_id'])->first();
+            }
+            $event = UrgentBlood::where('id', $validated['event_id'])->first();
+            $event = Event::where('id', $validated['event_id'])->first();
+            // dd($event);
+            if (!$event) {
+                \Log::error('Event not found:', ['urgent_blood_id' => $validated['urgent_blood_id']]);
+                return response()->json(['message' => 'Event not found'], 404);
+            }
+
+
+            $user = User::where('phone', $validated['phone'])
+            ->orWhere('email',$validated['email'])->first();
+            if (!$user) {
+                // dd($validated['bloodType']);
+                $user = User::create([
+                    'name' => $validated['name'],
+                    'email' => $validated['email'],
+                    'phone' => $validated['phone'],
+                    'password' => Hash::make($validated['password']),
+                    // 'blood_group' => $request->bloodType,
+                    // 'status' => 'active',
+                ]);
+                // dd($user);
+                \Log::info('Created new user:', $user->toArray());
+            }
+
+            $appointment = Appointment::create(array_merge($validated, [
+                'user_id' => $user->id,
+                'event_id' => $validated['event']->id,
+            ]));
+
+            \Log::info('Created appointment:', $appointment->toArray());
+
+            return response()->json(['message' => 'Appointment saved successfully', 'data' => $appointment], 201);
+        } catch (\Exception $e) {
+            \Log::error('Error in appointment store: ' . $e->getMessage());
+            return response()->json(['message' => 'Submission failed. Please try again.'], 500);
+        }
     }
+
+
 
     public function register(Request $request)
     {
@@ -141,4 +187,24 @@ class APIController extends Controller
         'message' => 'Invalid credentials',
     ], 401);
 }
+
+
+public function getUserDonations($userId)
+    {
+        // Retrieve the user from the database
+        $user = User::find($userId);
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        // Fetch donations for the user
+        $donations = Appointment::where('user_id', $userId)
+            ->orderBy('last_donation_date', 'desc') // You can adjust this as needed
+            ->get();
+
+        // Return the donations data as JSON
+        return response()->json(['donations' => $donations]);
+    }
+
 }

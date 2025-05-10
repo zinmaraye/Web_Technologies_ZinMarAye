@@ -14,16 +14,20 @@ class UrgentBlood extends Model
     public $fillable = [
         'id',
         'blood_group',
+        'location',
         'address',
-        'phone',
-        'status'
+        'contact',
+        'urgency',
+        'active'
     ];
 
     protected $casts = [
         'id' => 'integer',
         'blood_group' => 'string',
+        'location' => 'string',
         'address' => 'string',
-        'phone' => 'integer',
-        'status' => 'integer',
+        'contact' => 'string',
+        'urgency' => 'string',
+        'active' => 'integer',
     ];
 }

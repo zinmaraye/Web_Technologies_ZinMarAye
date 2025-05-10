@@ -3,17 +3,18 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\UserDonation;
+use App\Models\Appointment;
 
-class UserDonationController extends Controller
+class UserAppointmentController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function list()
     {
-        $user_donations = UserDonation::all(); // Fetch all user donations
-        return view('backend.user_donation.index', compact('user_donations')); // Pass them to the view
+        $user_appointments = Appointment::with('user','event','urgent')->get();
+        // dd($user_appointments);
+        return view('backend.user_appointment.list', compact('user_appointments'));
     }
 
     /**

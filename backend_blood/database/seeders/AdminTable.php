@@ -17,7 +17,6 @@ class AdminTable extends Seeder
             'name' => 'RootAdmin',
             'email' => 'root@admin.com',
             'password' => \Hash::make('rootadmin'),
-            'role_id' => 1
         ]);
     }
 }

@@ -12,7 +12,7 @@
                     <div class="card">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <span><i class="fa fa-align-justify"></i> Donation Gallery List</span>
-                            <a class="btn btn-sm btn-primary" href="{{ route('donation_gallery.create') }}">
+                            <a class="btn btn-sm btn-danger create_btn" href="{{ route('donation_gallery.create') }}">
                                 <i class="fa fa-plus"></i> Add New Gallery Item
                             </a>
                         </div>
@@ -25,8 +25,6 @@
                                             <tr>
                                                 <th>#</th>
                                                 <th>Title</th>
-                                                <th>Description</th>
-                                                <th>Thumbnail</th>
                                                 <th>Image</th>
                                                 <th>Rank</th>
                                                 <th>Actions</th>
@@ -37,14 +35,6 @@
                                                 <tr>
                                                     <td>{{ $index + 1 }}</td>
                                                     <td>{{ $item->title }}</td>
-                                                    <td>{{ $item->description }}</td>
-                                                    <td>
-                                                        @if($item->thumbnail)
-                                                            <img src="{{ asset('images/donation/thumbnail/' . $item->thumbnail) }}" alt="Thumbnail" width="80">
-                                                        @else
-                                                            <span class="text-muted">No thumbnail</span>
-                                                        @endif
-                                                    </td>
                                                     <td>
                                                         @if($item->image)
                                                             {{-- Decode the JSON array of image paths --}}

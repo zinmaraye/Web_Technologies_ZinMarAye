@@ -14,8 +14,6 @@ return new class extends Migration
         Schema::create('donation_galleries', function (Blueprint $table) {
             $table->id();
             $table->string('title')->nullable();
-            $table->string('description')->nullable();
-            $table->string('thumbnail')->nullable();
             $table->text('image')->nullable();
             $table->integer('rank')->default(0);
             $table->timestamps();

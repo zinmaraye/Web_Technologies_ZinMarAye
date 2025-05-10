@@ -4,10 +4,22 @@
         <span>Dashboard</span>
     </a>
 </li>
+<li class="nav-item {{ Request::is('events*') ? 'active' : '' }}">
+    <a class="nav-link" href="{{ route('events.index') }}">
+        <i class="nav-icon bi bi-calendar"></i>
+        <span>Events</span>
+    </a>
+</li>
 <li class="nav-item {{ Request::is('urgent_bloods*') ? 'active' : '' }}">
     <a class="nav-link" href="{{ route('urgent_blood.list') }}">
         <i class="nav-icon bi bi-shield-lock"></i>
-        <span>Urgent Blood</span>
+        <span>Urgent Blood Request</span>
+    </a>
+</li>
+<li class="nav-item {{ Request::is('appointments*') ? 'active' : '' }}">
+    <a class="nav-link" href="{{ route('user_appointment.list') }}">
+        <i class="nav-icon bi bi-shield-lock"></i>
+        <span>User Appointment List</span>
     </a>
 </li>
 <li class="nav-item {{ Request::is('user_donations*') ? 'active' : '' }}">
@@ -23,12 +35,7 @@
     </a>
 </li>
 
-<li class="nav-item {{ Request::is('events*') ? 'active' : '' }}">
-    <a class="nav-link" href="{{ route('events.index') }}">
-        <i class="nav-icon bi bi-calendar"></i>
-        <span>Events</span>
-    </a>
-</li>
+
 
 {{-- Role-based Admin Section --}}
 {{-- @if (Auth::user() && Auth::user()->hasRole('root-admin')) --}}

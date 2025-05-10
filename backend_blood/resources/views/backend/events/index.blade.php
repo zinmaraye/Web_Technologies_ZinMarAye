@@ -12,7 +12,7 @@
                     <div class="card">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <span><i class="fa fa-align-justify"></i> Event List</span>
-                            <a class="btn btn-sm btn-primary" href="{{ route('events.create') }}">
+                            <a class="btn btn-sm btn-danger create_btn" href="{{ route('events.create') }}">
                                 <i class="fa fa-plus"></i> Add New Event
                             </a>
                         </div>

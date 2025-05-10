@@ -2,7 +2,7 @@
 
 @section('content')
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ route('blood.index') }}">Urgent Blood List</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('urgent_blood.list') }}">Urgent Blood List</a></li>
         <li class="breadcrumb-item active">Create Urgent Blood Request</li>
     </ol>
 
@@ -16,7 +16,7 @@
                         </div>
 
                         <div class="card-body">
-                            <form action="{{ route('blood.store') }}" method="POST">
+                            <form action="{{ route('urgent_blood.store') }}" method="POST" enctype="multipart/form-data">
                                 @csrf
 
                                 <div class="form-group">
@@ -35,30 +35,41 @@
                                 </div>
 
                                 <div class="form-group">
+                                    <label for="location">Location</label>
+                                    <input type="text" name="location" id="location" class="form-control" rows="3" required>
+                                </div>
+
+                                <div class="form-group">
                                     <label for="address">Address</label>
                                     <textarea name="address" id="address" class="form-control" rows="3" required></textarea>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="phone">Phone</label>
-                                    <input type="text" name="phone" id="phone" class="form-control" required>
+                                    <label for="contact">Contact</label>
+                                    <input type="text" name="contact" id="contact" class="form-control" required>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="status">Status</label>
-                                    <select name="status" id="status" class="form-control" required>
-                                        <option value="">Select Status</option>
-                                        <option value="Pending">Pending</option>
-                                        <option value="Fulfilled">Fulfilled</option>
-                                        <option value="Cancelled">Cancelled</option>
+                                    <label for="urgency">Urgency</label>
+                                    <select name="urgency" id="urgency" class="form-control" required>
+                                        <option value="High">High</option>
+                                        <option value="Medium">Medium</option>
+                                        <option value="Critical">Critical</option>
                                     </select>
                                 </div>
 
+                                <div class="form-group">
+                                    <label for="active">Active</label>
+                                    <select name="active" id="active" class="form-control" required>
+                                        <option value="1">Active</option>
+                                        <option value="0">InActive</option>
+                                    </select>
+                                </div>
                                 <div class="form-group text-right">
                                     <button type="submit" class="btn btn-sm btn-primary">
                                         <i class="fa fa-save"></i> Save
                                     </button>
-                                    <a href="{{ route('blood.index') }}" class="btn btn-sm btn-secondary">
+                                    <a href="{{ route('urgent_blood.list') }}" class="btn btn-sm btn-secondary">
                                         <i class="fa fa-times"></i> Cancel
                                     </a>
                                 </div>

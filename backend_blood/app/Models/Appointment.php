@@ -10,8 +10,22 @@ class Appointment extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'email', 'phone', 'bloodType',
-        'appointmentDate', 'appointmentTime',
-        'event_title', 'event_date', 'event_time', 'event_address'
+        'user_id', 'blood_type','appointment_date', 'appointment_time',
+        'last_donation_date', 'event_id', 'type'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo('App\Models\User','user_id','id');
+    }
+
+    public function event()
+    {
+        return $this->belongsTo('App\Models\Event','event_id','id');
+    }
+
+    public function urgent()
+    {
+        return $this->belongsTo('App\Models\UrgentBlood','urgent_blood_id','id');
+    }
 }

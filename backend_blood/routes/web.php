@@ -6,6 +6,7 @@ use App\Http\Controllers\DonationGalleryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UrgentBloodController;
 use App\Http\Controllers\UserDonationController;
+use App\Http\Controllers\UserAppointmentController;
 use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
@@ -23,7 +24,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::group(['prefix' => 'admin', 'middleware' => 'auth-admin'], function () {
-    Route::get('/test', [HomeController::class, 'dashboard'])->name('dashboard.index');
+    Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard.index');
     //events
     Route::get('/events/index', [EventController::class, 'index'])->name('events.index');
     Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
@@ -34,10 +35,24 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth-admin'], function () {
     //events
     //urgent_blood
     Route::get('/urgent_blood/list', [UrgentBloodController::class, 'list'])->name('urgent_blood.list');
+    Route::get('/urgent_blood/create', [UrgentBloodController::class, 'create'])->name('urgent_blood.create');
+    Route::post('/urgent_blood/store', [UrgentBloodController::class, 'store'])->name('urgent_blood.store');
+    Route::get('/urgent_blood/edit/{id}', [UrgentBloodController::class, 'edit'])->name('urgent_blood.edit');
+    Route::post('/urgent_blood/update/{id}', [UrgentBloodController::class, 'update'])->name('urgent_blood.update');
+    Route::delete('/urgent_blood/delete/{id}', [UrgentBloodController::class, 'destroy'])->name('urgent_blood.destroy');
+
     //urgent_blood
     //user_donation
     Route::get('/user_donation/list', [UserDonationController::class, 'list'])->name('user_donation.list');
     //user_donation
+    //user_appointment
+    Route::get('/user_appointment/list', [UserAppointmentController::class, 'list'])->name('user_appointment.list');
+    Route::get('/user_appointment/create', [UserAppointmentController::class, 'create'])->name('user_appointment.create');
+    Route::post('/user_appointment/store', [UserAppointmentController::class, 'store'])->name('user_appointment.store');
+    Route::get('/user_appointment/edit/{id}', [UserAppointmentController::class, 'edit'])->name('user_appointment.edit');
+    Route::post('/user_appointment/update/{id}', [UserAppointmentController::class, 'update'])->name('user_appointment.update');
+    Route::delete('/user_appointment/delete/{id}', [UserAppointmentController::class, 'destroy'])->name('user_appointment.destroy');
+    //user_appointment
     //donation_gallery
     Route::get('/donation_gallery/index', [DonationGalleryController::class, 'index'])->name('donation_gallery.index');
     Route::get('/donation_gallery/create', [DonationGalleryController::class, 'create'])->name('donation_gallery.create');

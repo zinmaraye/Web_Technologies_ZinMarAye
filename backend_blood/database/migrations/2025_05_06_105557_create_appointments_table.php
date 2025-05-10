@@ -13,16 +13,13 @@ return new class extends Migration
     {
         Schema::create('appointments', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email');
-            $table->string('phone');
-            $table->string('bloodType');
-            $table->date('appointmentDate');
-            $table->string('appointmentTime');
-            $table->string('event_title');
-            $table->date('event_date');
-            $table->string('event_time');
-            $table->string('event_address');
+            $table->integer('user_id')->nullable();
+            $table->string('blood_type')->nullable();
+            $table->date('appointment_date')->nullable();
+            $table->string('appointment_time')->nullable();
+            $table->date('last_donation_date')->nullable();
+            $table->string('event_id')->nullable();
+            $table->string('type')->nullable();
             $table->timestamps();
         });
     }

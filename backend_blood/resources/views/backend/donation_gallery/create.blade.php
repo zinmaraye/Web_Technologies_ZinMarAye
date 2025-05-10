@@ -25,16 +25,6 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="description">Description</label>
-                                    <textarea name="description" id="description" class="form-control" rows="3" required>{{ old('description') }}</textarea>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="thumbnail">Thumbnail Image</label>
-                                    <input type="file" name="thumbnail" id="thumbnail" class="form-control-file" accept="image/*">
-                                </div>
-
-                                <div class="form-group">
                                     <label for="image">Image Gallery</label>
                                     <input type="file" name="images[]" id="image" class="form-control-file" accept="image/*" multiple required>
                                 </div>
