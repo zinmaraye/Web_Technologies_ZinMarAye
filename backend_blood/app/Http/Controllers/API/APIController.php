@@ -59,65 +59,39 @@ class APIController extends Controller
     public function appointment_store(Request $request)
     {
 
-        try {
+
 
             $validated = $request->validate([
-                'name' => 'required|string',
-                'email' => 'required|email',
-                'phone' => 'required|string',
-                'password' => 'required|string',
-                'bloodType' => 'required|string',
                 'appointment_date' => 'required|date',
                 'appointment_time' => 'required',
                 'last_donation_date' => 'required|string',
                 'type' => 'required|string',
-                'event_id' => 'required|integer',
             ]);
-            // dd('ZMA');
 
 
             if($validated['type'] == 'urgent'){
-                $validated['event'] = UrgentBlood::where('id', $validated['event_id'])->first();
+                $validated['event'] = UrgentBlood::where('id', $request->event_id)->first();
+                $event = $validated['event']->id;
+            }elseif($validated['type'] == 'event'){
+                $validated['event'] = Event::where('id', $request->event_id)->first();
+                $event = $validated['event']->id;
             }else{
-                $validated['event'] = Event::where('id', $validated['event_id'])->first();
-            }
-            $event = UrgentBlood::where('id', $validated['event_id'])->first();
-            $event = Event::where('id', $validated['event_id'])->first();
-            // dd($event);
-            if (!$event) {
-                \Log::error('Event not found:', ['urgent_blood_id' => $validated['urgent_blood_id']]);
-                return response()->json(['message' => 'Event not found'], 404);
-            }
-
-
-            $user = User::where('phone', $validated['phone'])
-            ->orWhere('email',$validated['email'])->first();
-            if (!$user) {
-                // dd($validated['bloodType']);
-                $user = User::create([
-                    'name' => $validated['name'],
-                    'email' => $validated['email'],
-                    'phone' => $validated['phone'],
-                    'password' => Hash::make($validated['password']),
-                    // 'blood_group' => $request->bloodType,
-                    // 'status' => 'active',
-                ]);
-                // dd($user);
-                \Log::info('Created new user:', $user->toArray());
+                $event = null;
             }
 
             $appointment = Appointment::create(array_merge($validated, [
-                'user_id' => $user->id,
-                'event_id' => $validated['event']->id,
+                'user_id' => $request->user_id,
+                'event_id' => $event,
+                'blood_type' => $request->bloodType,
+                'notes' => $request->notes,
             ]));
-
+            $user = User::where('id',$request->user_id)->first();
+            $user->blood_group = $request->bloodType;
+            $user->weight = $request->weight;
+            $user->update();
             \Log::info('Created appointment:', $appointment->toArray());
 
             return response()->json(['message' => 'Appointment saved successfully', 'data' => $appointment], 201);
-        } catch (\Exception $e) {
-            \Log::error('Error in appointment store: ' . $e->getMessage());
-            return response()->json(['message' => 'Submission failed. Please try again.'], 500);
-        }
     }
 
 
@@ -135,6 +109,9 @@ class APIController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
+            'weight' => $request->weight,
+            'age' => $request->age,
+            'status' => 1,
         ]);
 
         return response()->json([
@@ -143,37 +120,12 @@ class APIController extends Controller
         ]);
     }
 
-    // public function login(Request $request)
-    // {
-    //     // Validate the incoming request
-    //     $request->validate([
-    //         'email' => 'required|string',
-    //         'password' => 'required|string',
-    //     ]);
-
-    //     // Attempt to authenticate the user
-    //     if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-    //         $user = Auth::user();
-    //         return response()->json([
-    //             'message' => 'Login successful',
-    //             'user' => $user,
-    //         ]);
-    //     }
-
-    //     return response()->json([
-    //         'message' => 'Invalid credentials',
-    //     ], 401);
-    // }
-
     public function login(Request $request)
 {
-    // Validate the incoming request
     $request->validate([
         'email' => 'required|string|email',
         'password' => 'required|string',
     ]);
-
-    // Check if the user exists
     $user = User::where('email', $request->email)->first();
 
     if ($user && Hash::check($request->password, $user->password)) {
@@ -191,20 +143,33 @@ class APIController extends Controller
 
 public function getUserDonations($userId)
     {
-        // Retrieve the user from the database
         $user = User::find($userId);
 
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
         }
-
-        // Fetch donations for the user
         $donations = Appointment::where('user_id', $userId)
-            ->orderBy('last_donation_date', 'desc') // You can adjust this as needed
-            ->get();
+            ->orderBy('last_donation_date', 'desc')
+            ->with([
+                'user:id,name',
+                'event:id,title,event_date'
+            ])
+            ->get()
+            ->map(function ($appointment) {
+                return [
+                    'id' => $appointment->id,
+                    'event_title' => $appointment->event->title ?? null,
+                    'event_date' => $appointment->event->event_date ?? null,
+                    'blood_type' => $appointment->blood_type,
+                    'appointment_date' => $appointment->appointment_date,
+                    'appointment_time' => $appointment->appointment_time,
+                    'last_donation_date' => $appointment->last_donation_date,
+                    'type' => $appointment->type,
+                    'status' => $appointment->status == 0 ? 'Pending' : 'Done',
+                ];
+            });
 
-        // Return the donations data as JSON
-        return response()->json(['donations' => $donations]);
+        return $donations;
     }
 
 }

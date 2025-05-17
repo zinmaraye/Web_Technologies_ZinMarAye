@@ -42,10 +42,7 @@ class AdminLoginController extends Controller
             'password' => 'required|min:6'
         ]);
 
-        // $credentails = $request->only('email','password');
-
         if(Auth::guard('admin')->attempt(['email'=>$request->email,'password'=>$request->password])){
-        // dd('ZMMA ');
             return redirect()->route('events.index');
       }
 

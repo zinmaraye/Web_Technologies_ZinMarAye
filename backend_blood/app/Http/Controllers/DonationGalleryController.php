@@ -16,7 +16,7 @@ class DonationGalleryController extends Controller
     }
     public function index()
     {
-        $galleryItems = DonationGallery::all(); // Fetch all gallery items
+        $galleryItems = DonationGallery::all();
         return view('backend.donation_gallery.index', compact('galleryItems')); // Pass them to the view
     }
 
@@ -33,41 +33,14 @@ class DonationGalleryController extends Controller
      */
     public function store(Request $request)
     {
-        // Validate incoming request data
         $validatedData = $request->validate([
             'title' => 'required|string|max:255',
-            'description' => 'required|string|max:500',
-            'thumbnail' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
             'image' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:4096',
             'rank' => 'required|integer|min:1',
         ]);
-
-        // Handle file uploads (if any)
-        // if ($request->hasFile('thumbnail')) {
-        //     $thumbnailPath = $request->file('thumbnail')->store('images/donation/thumbnails', 'public');
-        // }
-
-        if ($request->hasFile('thumbnail')) {
-            $thumbnail = $request->file('thumbnail');
-            $thumbnailPathStorage = $thumbnail->store('images/donation/thumbnail', 'public');
-
-            $thumbnailName = time() . '_' . $thumbnail->getClientOriginalName();
-            $thumbnailPathPublic = public_path('images/donation/thumbnail/' . $thumbnailName);
-            $thumbnail->move(public_path('images/donation/thumbnail'), $thumbnailName);
-        }
-
-        // $imagePaths = [];
-        // if ($request->hasFile('images')) {
-        //     foreach ($request->file('images') as $image) {
-        //         $imagePaths[] = $image->store('images/donation/gallery', 'public');
-        //     }
-        // }
-
         $imagePaths = [];
-
-    // Check if the 'images' input field contains files
-    if ($request->hasFile('images')) {
-        // Loop through each uploaded image
+    if ($request->hasFile('images'))
+    {
         foreach ($request->file('images') as $image) {
 
             $imagePathStorage = $image->store('images/donation/gallery', 'public');
@@ -78,14 +51,11 @@ class DonationGalleryController extends Controller
 
             $image->move(public_path('images/donation/gallery'), $imageName);
 
-            $imagePaths[] = $imageName; // Store the path from the 'public' disk (for storage)
+            $imagePaths[] = $imageName;
         }
     }
-        // Create a new gallery item
         DonationGallery::create([
             'title' => $validatedData['title'],
-            'description' => $validatedData['description'],
-            'thumbnail' => $thumbnailName ?? null,
             'image' => $imagePaths ? json_encode($imagePaths) : null,
             'rank' => $validatedData['rank'],
         ]);
@@ -93,17 +63,6 @@ class DonationGalleryController extends Controller
         return redirect()->route('donation_gallery.index')->with('success', 'Gallery item created successfully!');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit($id)
     {
         $galleryItem = DonationGallery::findOrFail($id); // Find the gallery item by ID
@@ -113,51 +72,43 @@ class DonationGalleryController extends Controller
     public function update(Request $request, $id)
     {
         $galleryItem = DonationGallery::findOrFail($id);
-
-        // Validate incoming request data
-        $validatedData = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string|max:500',
-            'thumbnail' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:4096',
-            'rank' => 'required|integer|min:1',
-        ]);
-
         // Handle file uploads (if any)
         if ($request->hasFile('thumbnail')) {
             $thumbnailPath = $request->file('thumbnail')->store('images/donation/thumbnails', 'public');
             $galleryItem->thumbnail = $thumbnailPath;
         }
 
-        // Create a new GalleryItem or retrieve an existing one
-        $galleryItem = new GalleryItem();
+        $imagePaths = [];
+    if ($request->hasFile('images'))
+    {
+        foreach ($request->file('images') as $image) {
 
-        // Check if images are uploaded
-        if ($request->hasFile('images')) {
-            $imagePaths = []; // Array to store paths of uploaded images
+            $imagePathStorage = $image->store('images/donation/gallery', 'public');
 
-            // Loop through each uploaded image and store it
-            foreach ($request->file('images') as $image) {
-                // Store each image in the 'images/donation/gallery' folder and get the path
-                $imagePath = $image->store('images/donation/gallery', 'public');
+            $imageName = time() . '_' . $image->getClientOriginalName();
 
-                // Add the image path to the array
-                $imagePaths[] = $imagePath;
-            }
+            $imagePathPublic = public_path('images/donation/gallery/' . $imageName);
 
-            // Optionally, store the image paths in the database (e.g., serialize the array)
-            $galleryItem->image = json_encode($imagePaths);  // Assuming you want to save the paths as a JSON array
+            $image->move(public_path('images/donation/gallery'), $imageName);
 
-            // Save the gallery item (or save in your database)
-            $galleryItem->save();
+            $imagePaths[] = $imageName;
+            $galleryItem->image =json_encode($imagePaths);
         }
+    }else{
+        $galleryItem->image = $galleryItem->image;
+    }
 
-        // Update the gallery item with the validated data
-        $galleryItem->title = $validatedData['title'];
-        $galleryItem->description = $validatedData['description'];
-        $galleryItem->rank = $validatedData['rank'];
+        $galleryItem->title = $request->title;
+        $galleryItem->rank = $request->rank;
         $galleryItem->save();
 
         return redirect()->route('donation_gallery.index')->with('success', 'Gallery item updated successfully!');
+    }
+
+    public function destroy(string $id)
+    {
+        $urgent_blood = DonationGallery::findOrFail($id);
+        $urgent_blood->delete();
+        return redirect()->route('donation_gallery.index')->with('success', 'Donation Gallery Request deleted successfully!');
     }
 }

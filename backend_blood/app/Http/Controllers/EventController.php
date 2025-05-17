@@ -41,13 +41,6 @@ class EventController extends Controller
             'image' => 'required',
             'description' => 'required',
         ]);
-
-        // dd($request->all());
-        // if ($request->hasFile('image')) {
-        //     $image = $request->file('image');
-        //     $image = $image->store('images/event', 'public');
-        // }
-
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imagePathStorage = $image->store('images/event', 'public');
@@ -69,17 +62,7 @@ class EventController extends Controller
         return redirect()->route('events.index');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         $event = Event::findOrFail($id);
@@ -89,45 +72,31 @@ class EventController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request)
     {
-        // Validate the incoming request data
-        $validated_data = $request->validate([
-            'title' => 'required',
-            'description' => 'required',
-            'order' => 'required',
-        ]);
+        $event = Event::findOrFail($request->id);
 
-        // Find the event by its ID
-        $event = Event::findOrFail($id);
-
-        // Handle Image Upload
         if ($request->hasFile('image')) {
-            // Process the uploaded image for 'storage' and 'public' folder
             $image = $request->file('image');
             $imageName = \Str::random(10) . time() . '.' . $image->getClientOriginalExtension();
 
-            $imagePathStorage = $image->store('images/event', 'public');
-
-            // Save the image in the 'public/images/event' folder for direct access
-            $imagePathPublic = public_path('images/event/' . $imageName);
+            // Move file to public/images/event
             $image->move(public_path('images/event'), $imageName);
 
-            // Set the image paths
-            $event->image = $imageName;
+            $image = $imageName;
         } else {
-            $event->image = $event->image;
+            $image = $event->image;
         }
-
-        $event->title = $request->get('title');
-        $event->description = $request->get('description');
-        $event->status = $request->get('status');
-        $event->date = $request->get('date');
-
-        // Save the event
+        $event->title = $request->title;
+        $event->description = $request->description;
+        $event->event_date = $request->event_date;
+        $event->event_time = $request->event_time;
+        $event->address = $request->address;
+        $event->image = $image;
         $event->update();
-        return redirect()->route('event.index', compact('event'));
-    }
+        // dd($event);
+        return redirect()->route('events.index')->with('status', 'Event updated successfully.');
+}
 
 
     /**
@@ -135,6 +104,8 @@ class EventController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $urgent_blood = Event::findOrFail($id);
+        $urgent_blood->delete();
+        return redirect()->route('events.index')->with('success', 'Event Request deleted successfully!');
     }
 }

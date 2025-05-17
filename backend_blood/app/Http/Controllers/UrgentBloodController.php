@@ -34,17 +34,15 @@ class UrgentBloodController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
         $validatedData = $request->validate([
             'blood_group' => 'required|string',
             'location' => 'required|string',
             'address' => 'required|string',
             'contact' => 'required|string',
             'urgency' => 'required|string',
-            'active' => 'required|integer',  // 0 for inactive, 1 for active
+            'active' => 'required|integer',
         ]);
-        // dd('ZMAN');
-        // Create a new urgent blood request entry
+
         $urgentBlood = new UrgentBlood();
         $urgentBlood->blood_group = $validatedData['blood_group'];
         $urgentBlood->location = $validatedData['location'];
@@ -53,7 +51,6 @@ class UrgentBloodController extends Controller
         $urgentBlood->urgency = $validatedData['urgency'];
         $urgentBlood->active = $validatedData['active'];
 
-        // Save the record
         $urgentBlood->save();
 
         // Return a success message or response
@@ -74,10 +71,7 @@ class UrgentBloodController extends Controller
      */
     public function edit($id)
     {
-        // Fetch the urgent blood request by ID
         $urgent_blood = UrgentBlood::findOrFail($id);
-
-        // Return the edit view with the existing data
         return view('backend.urgent_blood.edit', compact('urgent_blood'));
     }
 
@@ -86,7 +80,6 @@ class UrgentBloodController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // Validate the incoming data
         $request->validate([
             'blood_group' => 'required|string',
             'location' => 'required|string',
@@ -95,11 +88,7 @@ class UrgentBloodController extends Controller
             'urgency' => 'required|string',
             'active' => 'required|boolean',
         ]);
-
-        // Find the urgent blood request record
         $urgent_blood = UrgentBlood::findOrFail($id);
-
-        // Update the urgent blood request data
         $urgent_blood->update([
             'blood_group' => $request->blood_group,
             'location' => $request->location,
@@ -109,7 +98,6 @@ class UrgentBloodController extends Controller
             'active' => $request->active,
         ]);
 
-        // Redirect to the urgent blood list with a success message
         return redirect()->route('urgent_blood.list')->with('success', 'Urgent Blood Request updated successfully!');
     }
 

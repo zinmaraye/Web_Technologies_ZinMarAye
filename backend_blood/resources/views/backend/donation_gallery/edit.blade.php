@@ -18,23 +18,30 @@
                         <div class="card-body">
                             <form action="{{ route('donation_gallery.update', $galleryItem->id) }}" method="POST" enctype="multipart/form-data">
                                 @csrf
-                                @method('PUT')
-
+                                <input type="hidden" name="gallery_item_id" value="{{ $galleryItem->id }}">
                                 <div class="form-group">
                                     <label for="title">Title</label>
                                     <input type="text" name="title" id="title" class="form-control" value="{{ old('title', $galleryItem->title) }}" required>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="image">Full Image</label>
-                                    <input type="file" name="image" id="image" class="form-control-file" accept="image/*">
-                                    @if($galleryItem->image)
-                                        <div class="mt-2">
-                                            <img src="{{ asset('storage/' . $galleryItem->image) }}" alt="Full Image" width="80">
-                                        </div>
-                                    @else
-                                        <p class="text-muted">No image uploaded</p>
-                                    @endif
+                                <label for="image">Full Image</label>
+                                <input type="file" name="images[]" id="image" class="form-control-file" accept="image/*" multiple>
+                                @if($galleryItem->image)
+                                    <div class="mt-2">
+                                            @php
+                                                $images = json_decode($galleryItem->image, true);
+                                            @endphp
+
+                                            @foreach ($images as $imagePath)
+                                            <img src="{{ asset('images/donation/gallery/' . $imagePath) }}" alt="Gallery Image" width="80">
+                                            @endforeach
+
+                                     </div>
+                                      @else
+                                        <span class="text-muted">No image</span>
+                                     @endif
+
                                 </div>
 
                                 <div class="form-group">

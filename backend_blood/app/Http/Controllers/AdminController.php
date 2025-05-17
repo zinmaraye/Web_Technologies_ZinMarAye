@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Admin;
+use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
@@ -17,87 +18,70 @@ class AdminController extends Controller
 
     public function index()
     {
-        $admins = Admin::all();
+        // $admins = Admin::orderBy('id', 'desc')->get();
+        $admins = Admin::paginate(10);
         return view('backend.admin.index', compact('admins'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return view('backend.admin.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        $validated_data = $request->validate([
+        $validated = $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:admins,email',
-            'password' => 'required|min:6|confirmed',
+            'password' => 'required|min:6',
+            'phone' => 'nullable',
         ]);
 
-        $admin = new Admin();
-        $admin->name = $request->name;
-        $admin->email = $request->email;
-        $admin->password = bcrypt($request->password);
-        $admin->save();
-
-        return redirect()->route('admins.index')->with('success', 'Admin created successfully.');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        $admins = Admin::findOrFail($id);
-        return view('backend.admin.edit', compact('admins'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        $validated_data = $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:admins,email,'.$id,
-            'password' => 'nullable|min:6|confirmed',
-        ]);
-
-        $admin = Admin::findOrFail($id);
-        $admin->name = $request->name;
-        $admin->email = $request->email;
-
-        if ($request->password) {
-            $admin->password = bcrypt($request->password);
+        if ($request->filled('password')) {
+            $validated['password'] = Hash::make($request->password);
+        } else {
+            unset($validated['password']);
         }
 
-        $admin->save();
+        Admin::create($validated);
 
-        return redirect()->route('admins.index')->with('success', 'Admin updated successfully.');
+        return redirect()->route('admin.index')->with('status', 'Admin created successfully.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function edit($admin_id)
     {
-        $admin = Admin::findOrFail($id);
-        $admin->delete();
+        $admin = Admin::findOrFail($admin_id);
+        return view('backend.admin.edit', compact('admin'));
+    }
 
-        return redirect()->route('admins.index')->with('success', 'Admin deleted successfully.');
+    public function update(Request $request, Admin $admin)
+    {
+        $admin = Admin::findOrFail($request->admin_id);
+        $validated = $request->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:admins,email,' . $admin->id,
+            'password' => 'nullable|min:6',
+            'phone' => 'nullable',
+        ]);
+
+        if ($request->filled('password')) {
+            $validated['password'] = Hash::make($request->password);
+        } else {
+            unset($validated['password']);
+        }
+
+        if (!$request->filled('password')) {
+            unset($validated['password']);
+        }
+
+        $admin->update($validated);
+
+        return redirect()->route('admin.index')->with('status', 'Admin updated successfully.');
+    }
+
+    public function destroy(Admin $admin)
+    {
+        $admin->delete();
+        return redirect()->route('admin.index')->with('status', 'Admin deleted.');
     }
 }

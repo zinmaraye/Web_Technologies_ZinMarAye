@@ -5,7 +5,7 @@ const Footer = () => {
   return (
     <footer className="bg-gray-900 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* About Section */}
           <div>
             <div className="flex items-center mb-4">
@@ -36,19 +36,16 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">About Us</a>
+                <a href="event" className="text-gray-400 hover:text-white transition-colors">Events</a>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">Donation Process</a>
+                <a href="urgent-needs" className="text-gray-400 hover:text-white transition-colors">Urgent Needs</a>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">Blood Types</a>
+                <a href="gallery" className="text-gray-400 hover:text-white transition-colors">Donation Gallery</a>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">FAQs</a>
-              </li>
-              <li>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</a>
+                <a href="requirement" className="text-gray-400 hover:text-white transition-colors">Requirement</a>
               </li>
             </ul>
           </div>
@@ -75,27 +72,6 @@ const Footer = () => {
               </li>
             </ul>
           </div>
-
-          {/* Newsletter */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4">ZMA Newsletter</h3>
-            <p className="text-gray-400 mb-4">
-              Subscribe to our newsletter for updates on blood drives and urgent needs.
-            </p>
-            <form className="space-y-2">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-white"
-              />
-              <button
-                type="submit"
-                className="w-full bg-red-500 text-white py-2 rounded-md hover:bg-red-600 transition-colors"
-              >
-                Testing Subscribe ZMA
-              </button>
-            </form>
-          </div>
         </div>
 
         <div className="mt-12 pt-8 border-t border-gray-800">
@@ -113,11 +89,6 @@ const Footer = () => {
                 <li>
                   <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
                     Privacy Policy
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
-                    Cookie Policy
                   </a>
                 </li>
               </ul>

@@ -3,6 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+use App\Models\User;
+use App\Models\Appointment;
+use App\Models\Event;
+use App\Models\UrgentBlood;
 
 class DashboardController extends Controller
 {
@@ -13,56 +18,26 @@ class DashboardController extends Controller
     {
         $this->middleware('auth:admin');
     }
-    public function index()
-    {
-        //
-    }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+    public function dashboard()
+     {
+        // Total active users (assuming 'status' column)
+    $activeDonors = User::where('status', 1)->count();
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+    // Total appointments done (status = 1 means done)
+    $completedAppointments = Appointment::where('status', 1)->count();
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+    // Upcoming events count (events with date >= today)
+    $upcomingEvents = Event::whereDate('event_date', '>=', Carbon::today())->count();
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+    // Active urgent needs count (assuming 'active' field = 1 means active)
+    $activeUrgentNeeds = UrgentBlood::where('active', 1)->count();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+    return view('backend.dashboard', compact(
+        'activeDonors',
+        'completedAppointments',
+        'upcomingEvents',
+        'activeUrgentNeeds'
+    ));
     }
 }

@@ -28,6 +28,7 @@
                                                 <th>Date</th>
                                                 <th>Time</th>
                                                 <th>Address</th>
+                                                <th>Description</th>
                                                 <th>Image</th>
                                                 <th>Actions</th>
                                             </tr>
@@ -40,6 +41,7 @@
                                                     <td>{{ $event->event_date }}</td>
                                                     <td>{{ $event->event_time }}</td>
                                                     <td>{{ $event->address }}</td>
+                                                    <td>{{ $event->description }}</td>
                                                     <td>
                                                         @if($event->image)
                                                         <img src="{{ asset('images/event/' . $event->image) }}" alt="Event Image" width="80">
@@ -51,7 +53,6 @@
                                                         <a href="{{ route('events.edit', $event->id) }}" class="btn btn-sm btn-warning">Edit</a>
                                                         <form action="{{ route('events.destroy', $event->id) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Are you sure?');">
                                                             @csrf
-                                                            @method('DELETE')
                                                             <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                                                         </form>
                                                     </td>

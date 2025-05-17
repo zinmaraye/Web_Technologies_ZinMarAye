@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Appointment;
 
+
 class UserAppointmentController extends Controller
 {
     /**
@@ -13,55 +14,25 @@ class UserAppointmentController extends Controller
     public function list()
     {
         $user_appointments = Appointment::with('user','event','urgent')->get();
-        // dd($user_appointments);
         return view('backend.user_appointment.list', compact('user_appointments'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function updateStatus(Request $request)
     {
-        //
+        $appointment = Appointment::findOrFail($request->appointment_id);
+        if ($request->action == 'done') {
+            $appointment->status = 1;
+        }
+        $appointment->update();
+
+        return redirect()->back()->with('status', 'Appointment updated.');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function destroy($id)
     {
-        //
+        $appointment = Appointment::findOrFail($id);
+        $appointment->delete();
+        return redirect()->back()->with('status', 'Appointment deleted.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
 }

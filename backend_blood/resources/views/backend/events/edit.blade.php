@@ -21,7 +21,7 @@
                         <div class="card-body">
                             <form method="POST" action="{{ route('events.update', $event->id) }}" enctype="multipart/form-data">
                                 @csrf
-
+                                <input type="hidden" name="event_id" value="{{ $event->id }}">
                                 <div class="form-row">
                                     <!-- Title -->
                                     <div class="form-group col-md-6">

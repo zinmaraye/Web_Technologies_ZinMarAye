@@ -12,12 +12,14 @@ import Gallery from './components/Gallery';
 import Education from './components/Education';
 import Requirement from './components/Requirement';
 import Profile from './components/Profile';
+import ScrollToTop from './components/ScrollToTop';
 import Footer from './components/Footer';
 
 function App() {
   return (
     <Router>
       <div className="min-h-screen bg-gray-50">
+        <ScrollToTop />
         <Navbar />
 
         <Routes>

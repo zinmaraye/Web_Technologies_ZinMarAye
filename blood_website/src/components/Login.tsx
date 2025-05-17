@@ -20,7 +20,7 @@ function Login() {
   return (
     <div className="max-w-7xl mx-auto p-8 py-20">
       <h1 className="text-4xl font-bold text-gray-800 mb-4">Login</h1>
-      <form onSubmit={handleLogin}>
+      <form onSubmit={handleLogin} aria-label="login-form">
         <div className="mb-6">
           <label htmlFor="username" className="block text-gray-700">Username</label>
           <input

@@ -20,6 +20,8 @@ return new class extends Migration
             $table->date('last_donation_date')->nullable();
             $table->string('event_id')->nullable();
             $table->string('type')->nullable();
+            $table->string('status')->default(0);
+            $table->string('notes')->nullable();
             $table->timestamps();
         });
     }

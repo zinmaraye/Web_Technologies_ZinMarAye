@@ -11,7 +11,7 @@ class Appointment extends Model
 
     protected $fillable = [
         'user_id', 'blood_type','appointment_date', 'appointment_time',
-        'last_donation_date', 'event_id', 'type'
+        'last_donation_date', 'event_id', 'type','status','notes'
     ];
 
     public function user()
